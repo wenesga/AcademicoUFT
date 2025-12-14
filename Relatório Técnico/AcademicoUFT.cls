@@ -216,7 +216,8 @@
 % ---
 % Espacamento entre linhas - NBR 14724/2011 - 5.2 Espacamento
 % ---
-\OnehalfSpacing
+%\OnehalfSpacing 
+\setSpacing{1.3} % 1.3 = 1.5 Real
 % ---
 
 % ------------------------------------------------------------------------
@@ -1207,9 +1208,9 @@
                 \imprimirpreambulo
             \end{minipage}}%
         \vfill
-        {\abntex@ifnotempty{\imprimirinstituicao}{\imprimirinstituicao}}%
+        {\abntex@ifnotempty{\imprimirinstituicao}{\imprimirinstituicao}}
         \vfill
-        {\large\imprimirorientadorRotulo~\imprimirorientador\par}
+        {\large\imprimirorientadorRotulo~\imprimirorientador\par}%
         
         \abntex@ifnotempty{\imprimircoorientador}{%
           {\large\imprimircoorientadorRotulo~\imprimircoorientador\par}
