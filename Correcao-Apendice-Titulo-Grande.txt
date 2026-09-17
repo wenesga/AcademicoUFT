@@ -1,0 +1,62 @@
+CORREÇÃO: título de apêndice/anexo grande quebrando errado (centralizado linha por linha)
+Arquivo: AcademicoUFT.cls
+Data: 2026-09-09
+
+PROBLEMA ORIGINAL
+Quando o título do apêndice/anexo era curto, \centering funcionava bem
+(centralizava a linha toda, "APÊNDICE A – Título"). Quando o título era
+grande e quebrava em várias linhas, cada linha quebrada centralizava
+sozinha, formando um efeito de escada. O certo, pela ABNT: título curto
+centraliza; título grande quebra e a continuação volta a alinhar logo
+depois do travessão (–), sem centralizar cada linha.
+
+O QUE FOI MUDADO
+
+1) Adicionado logo depois da declaração de \chapternamenumlength
+   (dentro de \makechapterstyle{abnt}, por volta da linha 611-613):
+
+  \ifx \ABNTEXtitlefulllength \undefined
+    \newlength{\ABNTEXtitlefulllength}
+  \fi
+
+2) Dentro de \def\printchaptertitle##1{...}, o bloco do
+   \ifthenelse{\boolean{abntex@apendiceousecao}}{...}{...} foi trocado.
+
+   ANTES (comportamento antigo, só centralizava sempre):
+
+    \ifthenelse{\boolean{abntex@apendiceousecao}}{%
+        \centering%
+        \settowidth{\chapternamenumlength}{\printchaptername\printchapternum\afterchapternum}%
+        \ABNTEXchapterupperifneeded{##1}%
+      }{%
+
+   DEPOIS (comportamento novo, mede o título e decide):
+
+    \ifthenelse{\boolean{abntex@apendiceousecao}}{%
+        \settowidth{\chapternamenumlength}{\printchaptername\printchapternum\afterchapternum}%
+        \settowidth{\ABNTEXtitlefulllength}{\printchaptername\printchapternum\afterchapternum\ABNTEXchapterupperifneeded{##1}}%
+        \ifdim\ABNTEXtitlefulllength>\columnwidth
+          \parbox[t]{\columnwidth-\chapternamenumlength}{\ABNTEXchapterupperifneeded{##1}}%
+        \else
+          \centering\ABNTEXchapterupperifneeded{##1}%
+        \fi
+      }{%
+
+COMO FUNCIONA
+- Mede a largura de "APÊNDICE A – Título completo" numa linha só
+  (\ABNTEXtitlefulllength) e compara com a largura disponível da página
+  (\columnwidth).
+- Se cabe numa linha: centraliza normal (\centering), igual sempre foi.
+- Se não cabe: usa um \parbox com largura (\columnwidth menos a largura
+  do prefixo "APÊNDICE A – "), o que trava a quebra de linha logo depois
+  do travessão, em vez de recentralizar cada linha separada.
+
+COMO VOLTAR AO ORIGINAL (se precisar desfazer)
+1. Apagar o bloco \ifx \ABNTEXtitlefulllength ... \fi (o item 1 acima).
+2. Trocar o bloco novo do item 2 de volta para a versão "ANTES" mostrada
+   acima.
+
+ONDE APLICAR NOS OUTROS MODELOS
+Mesma correção serve para os modelos de Relatório e de Pesquisa, porque
+usam a mesma classe AcademicoUFT.cls — basta substituir o arquivo .cls
+inteiro, não precisa mexer no .tex de cada um.
