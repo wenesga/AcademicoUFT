@@ -30,13 +30,14 @@ O QUE FOI MUDADO
         \ABNTEXchapterupperifneeded{##1}%
       }{%
 
-   DEPOIS (comportamento novo, mede o título e decide):
+   DEPOIS (comportamento novo, mede o título e decide) — versão final,
+   já com hifenização desligada e alinhamento à esquerda dentro da caixa:
 
     \ifthenelse{\boolean{abntex@apendiceousecao}}{%
         \settowidth{\chapternamenumlength}{\printchaptername\printchapternum\afterchapternum}%
         \settowidth{\ABNTEXtitlefulllength}{\printchaptername\printchapternum\afterchapternum\ABNTEXchapterupperifneeded{##1}}%
         \ifdim\ABNTEXtitlefulllength>\columnwidth
-          \parbox[t]{\columnwidth-\chapternamenumlength}{\ABNTEXchapterupperifneeded{##1}}%
+          \parbox[t]{\columnwidth-\chapternamenumlength}{\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\ABNTEXchapterupperifneeded{##1}}%
         \else
           \centering\ABNTEXchapterupperifneeded{##1}%
         \fi
@@ -50,11 +51,22 @@ COMO FUNCIONA
 - Se não cabe: usa um \parbox com largura (\columnwidth menos a largura
   do prefixo "APÊNDICE A – "), o que trava a quebra de linha logo depois
   do travessão, em vez de recentralizar cada linha separada.
+- Dentro dessa caixa: \raggedright tira a justificação (não força mais
+  a margem direita, esticando espaço entre palavras); \hyphenpenalty e
+  \exhyphenpenalty em 10000 desligam a hifenização — palavra grande
+  nunca quebra no meio, ou cabe inteira na linha ou vai pra próxima.
+
+TENTATIVA DESCARTADA (2026-09-09): tentei ir além e centralizar o bloco
+inteiro "APÊNDICE A – Título" como uma unidade só (pacote varwidth),
+pra funcionar mesmo em título grande. Funcionava, mas deslocava o bloco
+pra fora da margem padrão que todo capítulo do documento usa — quebrava
+consistência visual com o resto do TCC. Foi revertido. Não repetir sem
+resolver esse detalhe da margem primeiro.
 
 COMO VOLTAR AO ORIGINAL (se precisar desfazer)
 1. Apagar o bloco \ifx \ABNTEXtitlefulllength ... \fi (o item 1 acima).
 2. Trocar o bloco novo do item 2 de volta para a versão "ANTES" mostrada
-   acima.
+   acima (a que só tem \centering, sem \ifdim).
 
 ONDE APLICAR NOS OUTROS MODELOS
 Mesma correção serve para os modelos de Relatório e de Pesquisa, porque
