@@ -216,8 +216,7 @@
 % ---
 % Espacamento entre linhas - NBR 14724/2011 - 5.2 Espacamento
 % ---
-%\OnehalfSpacing 
-\setSpacing{1.3} % 1.3 = 1.5 Real
+\OnehalfSpacing
 % ---
 
 % ------------------------------------------------------------------------
@@ -263,11 +262,11 @@
 % Fontes padroes de part, chapter, section, subsection e subsubsection
 % ------------------------------------------------------------------------
 \newcommand{\ABNTEXchapterfont}{\bfseries\scshape} 
-\newcommand{\ABNTEXchapterfontsize}{\Huge}
-%\newcommand{\ABNTEXchapterfontsize}{\fontsize{24pt}{24pt}\selectfont}
+%\newcommand{\ABNTEXchapterfontsize}{\Huge}
+\newcommand{\ABNTEXchapterfontsize}{\fontsize{20pt}{20pt}\selectfont}
 % ------------------------------------------------------------------------
 \newcommand{\ABNTEXpartfont}{\ABNTEXchapterfont}
-\newcommand{\ABNTEXpartfontsize}{\ABNTEXchapterfontsize}
+\newcommand{\ABNTEXpartfontsize}{\Huge}
 
 \newcommand{\ABNTEXsectionfont}{\bfseries}
 \newcommand{\ABNTEXsectionfontsize}{\Large}
@@ -612,6 +611,9 @@
   \ifx \chapternamenumlength \undefined
     \newlength{\chapternamenumlength}
   \fi
+  \ifx \ABNTEXtitlefulllength \undefined
+    \newlength{\ABNTEXtitlefulllength}
+  \fi
 
   % tamanhos de fontes de chapter e part	
    \ifthenelse{\equal{\ABNTEXisarticle}{true}}{%
@@ -647,9 +649,13 @@
     \chaptitlefont%
     \ifthenelse{\boolean{abntex@innonumchapter}}{\centering\ABNTEXchapterupperifneeded{##1}}{%
     \ifthenelse{\boolean{abntex@apendiceousecao}}{%
-        \centering%
         \settowidth{\chapternamenumlength}{\printchaptername\printchapternum\afterchapternum}%
-        \ABNTEXchapterupperifneeded{##1}%
+        \settowidth{\ABNTEXtitlefulllength}{\printchaptername\printchapternum\afterchapternum\ABNTEXchapterupperifneeded{##1}}%
+        \ifdim\ABNTEXtitlefulllength>\columnwidth
+          \parbox[t]{\columnwidth-\chapternamenumlength}{\raggedright\hyphenpenalty=10000\exhyphenpenalty=10000\ABNTEXchapterupperifneeded{##1}}%
+        \else
+          \centering\ABNTEXchapterupperifneeded{##1}%
+        \fi
       }{%
         \settowidth{\chapternamenumlength}{\printchaptername\printchapternum\afterchapternum}%
         \parbox[t]{\columnwidth-\chapternamenumlength}{\ABNTEXchapterupperifneeded{##1}}}%
@@ -1162,9 +1168,7 @@
         \vspace*{-2cm}
         \includegraphics[width=0.17\textwidth]{LogoUFT.pdf}\\ 
         {\linespread{1.1}\selectfont\scshape\large
-            Universidade Federal do Tocantins \\
-            Campus Universitário de Palmas \\
-            Curso de Licenciatura em Computação\\
+            \imprimirinstituicao\\
         }
         \vfill\vspace*{-2em}
         {\bfseries\large\imprimirautor\par}%
@@ -1208,9 +1212,9 @@
                 \imprimirpreambulo
             \end{minipage}}%
         \vfill
-        {\abntex@ifnotempty{\imprimirinstituicao}{\imprimirinstituicao}}
+        {\abntex@ifnotempty{\imprimirinstituicao}{\imprimirinstituicao}}%
         \vfill
-        {\large\imprimirorientadorRotulo~\imprimirorientador\par}%
+        {\large\imprimirorientadorRotulo~\imprimirorientador\par}
         
         \abntex@ifnotempty{\imprimircoorientador}{%
           {\large\imprimircoorientadorRotulo~\imprimircoorientador\par}
