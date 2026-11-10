@@ -664,12 +664,12 @@
        
   % impressao do numero do capitulo     	
   \renewcommand{\printchapternum}{%
-     \tocprintchapter
-     \setboolean{abntex@innonumchapter}{false}
+     \tocprintchapter%
+     \setboolean{abntex@innonumchapter}{false}%
      \chapnumfont%
      \space\thechapter\space%
      \ifthenelse{\boolean{abntex@apendiceousecao}}{%
-       \tocinnonumchapter
+       \unskip\tocinnonumchapter%
        \ABNTEXcaptiondelim%
      }{} % else
   }
